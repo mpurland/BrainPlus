@@ -37,7 +37,7 @@ $ sbt run
 [info] Running brainplus.BrainPlus 
 Scala BrainPlus v0.1 by Matthew Purland
 At the prompt, enter any valid Brainfuck or BrainPlus programs or enter any of the following commands.
-Available commands: verbose printMemory runProgramHelloWorld p exit reset r 
+Available commands: verbose printMemory runProgramHelloWorld p loadProgram exit reset r
 > runProgramHelloWorld
 Hello World!
 
@@ -49,6 +49,77 @@ Memory pointer: 4
 Storage: 0
 Last output value: 10
 Stack: 0 87 100 33 10 
+
+> loadProgram src/main/programs/keepcalm.bp
+KeepCalmKeepCoding
+
+> verbose
+Verbose is now on.
+
+> a!.@+++$@
+Code: a!.@+++$@
+Resetting state...
+Resetting function stack state...
+Stack: 0 
+Functions: a(3) 
+Memory pointer: 0
+Storage: 0
+No output yet.
+Stack: 0 
+Processing symbol: a
+Calling function: a
+Resetting function stack state...
+Stack: 0 
+Memory pointer: 0
+Storage: 0
+No output yet.
+Stack: 0 
+Processing symbol: +
+Memory pointer: 0
+Storage: 0
+No output yet.
+Stack: 1 
+Processing symbol: +
+Memory pointer: 0
+Storage: 0
+No output yet.
+Stack: 2 
+Processing symbol: +
+Memory pointer: 0
+Storage: 0
+No output yet.
+Stack: 3 
+Processing symbol: $
+Memory pointer: 0
+Storage: 3
+No output yet.
+Stack: 3 
+Processing symbol: @
+Memory pointer: 0
+Storage: 3
+No output yet.
+Stack: 0 
+Processing symbol: !
+Memory pointer: 0
+Storage: 3
+No output yet.
+Stack: 3 
+Processing symbol: .
+Output: '' value: 3
+Memory pointer: 0
+Storage: 3
+Last output value: 3
+Stack: 3 
+Processing symbol: @
+Memory pointer: 0
+Storage: 3
+Last output value: 3
+Stack: 3 
+
+> verbose
+Verbose is now off.
+
+>  a!.@+++$@
 
 > 
 

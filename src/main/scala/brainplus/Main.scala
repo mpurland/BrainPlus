@@ -11,47 +11,25 @@ object BrainPlus extends App {
   // Outputs "Hello World!"
   // bp.run("++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>.")
 
-  // Outputs "Hello World!" with a linefeed.
-  // bp.run("++++++++[>++++[>++>+++>+++>+<<<<-]>+>->+>>+[<]<-]>>.>>---.+++++++..+++.>.<<-.>.+++.------.--------.>+.>++.")
-
-  // Outputs ascii value 3
-  // bp.run("a!.@+++$@")
-
-  // Outputs ascii value 341 or 601?
-  // bp.run("++>++++>+<<a!.>.>.@,>,-[-<+>]<+$@")
-
-  // Outputs 99 bottles of beer
-  // bp.run(",.+[>g22.<--h.+]]>++--[,],,,<->-][],$<>!,!,,-g,,,+@7$>66++.!-.[!+><+++[[..-<[-t-$--[$.--$-$-$---.>.@7-[.!!>6++-$++++$+$.@7+$6++.+++..!+.@$7--+.+-$[[-[.@7++++.6++++++++.---.@7+++++++.7$6+.!----[..@$>!3$---------------a-.+-b.+!$!!>c@d3----------------.e.f@")
-
-  // Outputs "KeepCalmKeepCoding"
-  // bp.run("1+$-+--!++>$<+++++++$+$$+++[++a.b$!.$a$+-.-[>c$$]]@5-----.7------$-----..!++++++.[]--o+>+>]>]]]+$!]>+@4+++.6+.7----.+.>>>!><->>[-<>,>+.[>>>>>>>>+>,,+]!]@>>4+-+-+++.+7-$.--$---------.+++++.--<!!![!+.[>.[<@")
-
-  // Outputs arbitrarily many Fibonacci numbers. Does not exit.
-  // bp.run(">++++++++++>+>+[[+++++[>++++++++<-]>.<++++++[>--------<-]+<<<]>.>>[[-]<[>+<-]>>[<<+>+>-]<[>+<-[>+<-[>+<-[>+<-[>+<-[>+<-[>+<-[>+<-[>+<-[>[-]>+>+<<<-[>+<-]]]]]]]]]]]+>>>]<<<]")
-
-  // Multiply by 3
-  // bp.run(">->,b<!a+!.b]!.+[.-$[[.+,!<!,,,,].><--.,.]]+--]+->@,>,-[-<+>]<+$@++[+[>,$[-<-a!a!$@")
-
-  // bp.run("++[+[>,$[-<-a!a!.!]a>...,..,.]@,>,-[-<+>]<+$@")
-  // bp.run("1+$-+--!++>$<+++++++$+$$+++[++a.b$!.$a$+-.-[>c$$]]@5-----.7------$-----..!++++++.[]--o+>+>]>]]]+$!]>+@4+++.6+.7----.+.>>>!><->>[-<>,>+.[>>>>>>>>+>,,+]!]@>>4+-+-+++.+7-$.--$---------.+++++.--.[<@")
-  // bp.run(",>,$[!>--$<<a>>]4]+,,-[-<+>]<+.$@")
-
-  def exitCommand(): Unit = System.exit(0)
-  def printMemoryCommand(): Unit = bp.printMemory(true)
-  def resetCommand(): Unit = {
+  def exitCommand(arguments: Seq[String]): Unit = System.exit(0)
+  def printMemoryCommand(arguments: Seq[String]): Unit = bp.printMemory(true)
+  def resetCommand(arguments: Seq[String]): Unit = {
     bp.reset()
     println("Interpreter memory reset.")
   }
-  def verboseCommand(): Unit = {
+  def verboseCommand(arguments: Seq[String]): Unit = {
     verbose = !verbose
     println(s"Verbose is now ${if (verbose) "on" else "off"}.")
   }
-  def programHelloWorldCommand(): Unit = {
-    // Outputs "Hello World!"
-    bp.run("++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>.")
+  def loadProgramCommand(arguments: Seq[String]): Unit = {
+    val source = scala.io.Source.fromFile(s"${arguments(1)}").mkString
+    bp.run(source)
+  }
+  def programHelloWorldCommand(arguments: Seq[String]): Unit = {
+    loadProgramCommand("loadProgram" :: "src/main/programs/hello.b" :: Nil)
   }
 
-  val commands = Map[String, () => Unit]("exit" -> exitCommand, "p" -> printMemoryCommand, "printMemory" -> printMemoryCommand, "r" -> resetCommand, "reset" -> resetCommand, "verbose" -> verboseCommand, "runProgramHelloWorld" -> programHelloWorldCommand)
+  val commands = Map[String, Seq[String] => Unit]("exit" -> exitCommand, "p" -> printMemoryCommand, "printMemory" -> printMemoryCommand, "r" -> resetCommand, "reset" -> resetCommand, "verbose" -> verboseCommand, "runProgramHelloWorld" -> programHelloWorldCommand, "loadProgram" -> loadProgramCommand)
 
   class CommandAutoCompleter extends Completer {
     def complete(buffer: String, cursor: Int, candidates: java.util.List[CharSequence]): Int = {
@@ -78,15 +56,18 @@ object BrainPlus extends App {
   println
 
   Iterator.continually(con.readLine("> ")).dropWhile(_ == null).foreach(line => {
-    commands.get(line) match {
+    val arguments = line.split(" ")
+    val commandString = arguments(0)
+    commands.get(commandString) match {
       case Some(command) => {
-        command()
+        command(arguments)
       }
       case _ => {
         bp.run(line)(verbose)
         if (verbose) bp.printMemory
       }
     }
+
     print("\n")
   })
 }
