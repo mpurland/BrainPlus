@@ -3,6 +3,32 @@ Description
 
 BrainPlus is a Brainfuck and BrainPlus interpreter implemented in Scala.
 
+Instruction Set
+---------------
+
+### Instruction set (Brainfuck)
+```
+>    Increment the pointer (to point to the next cell to the right).
+<    Decrement the pointer (to point to the next cell to the left).
++    Increment (increase by one) the byte at the pointer.
+-    Decrement (decrease by one) the byte at the pointer.
+.    Output the value of the byte at the pointer.
+,    Accept one byte of input, storing its value in the byte at the pointer.
+[    Jump forward to the command after the corresponding ] if the byte at the pointer is zero.
+]    Jump back to the command after the corresponding [ if the byte at the pointer is nonzero.
+```
+
+### Extended instruction set (BrainPlus)
+For information see (http://esolangs.org/wiki/Extended_Brainfuck and http://www.primaryobjects.com/CMS/Article163)
+```
+$    Overwrites the byte in storage with the byte at the pointer. (Extended Type I)
+!    Overwrites the byte at the pointer with the byte in storage. (Extended Type I)
+0-F  Sets the value of the current memory pointer to a multiple of 16. (Extended Type III)
+a-z  Call function a-z, where function is named based upon location in code. (BrainPlus)
+@    Exits the program, or if inside a function, return to the last position in main program
+     and restore state. (Extended Type I, BrainPlus)
+```
+
 Building
 --------
 
